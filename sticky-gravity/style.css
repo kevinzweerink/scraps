@@ -1,6 +1,7 @@
 body {
 	background: #333333;
 	overflow: hidden;
+	cursor: none;
 }
 
 .particles {
