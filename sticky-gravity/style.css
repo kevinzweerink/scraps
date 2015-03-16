@@ -1,0 +1,45 @@
+body {
+	background: #333333;
+	overflow: hidden;
+}
+
+.particles {
+	position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+}
+
+.particle {
+	position: absolute;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+
+	top: 50%;
+	left: 50%;
+
+	background: #FFF;
+}
+
+.tracker {
+	position: absolute;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	width: 30px;
+	height: 30px;
+	background: #FFF;
+	opacity: .5;
+	top: 50%;
+	left: 50%;
+	border-radius: 50%;
+}
+
+.controls{
+	position: absolute;
+	z-index: 100;
+}

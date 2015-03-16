@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Sticky Gravity</title>
+<link href='style.css' rel='stylesheet'>
+
+</head>
+<body>
+
+<div class='particles'></div>
+
+<div class='tracker'></div>
+
+<div class='controls'>
+	<input type='range' min='50' max ='1000' id='fieldSize' value='600'>
+	<input type='range' min='3' max='100' id='particleSize' value='10'>
+	<input type='range' min='1' max='400' id='numParticles' value='50'>
+</div>
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+      <feBlend in="SourceGraphic" in2="goo" />
+    </filter>
+  </defs>
+</svg>
+
+<script src='main.js'></script>
+</body>
+</html>
