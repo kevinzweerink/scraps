@@ -59,6 +59,7 @@ var Mouse = {
 
 var fieldSize = document.querySelector('#fieldSize').value;
 var particleSize = document.querySelector('#particleSize').value;
+var anchorMass = document.querySelector('#anchorMass').value;
 var maxK = 0.2;
 var maxMass = 10;
 
@@ -119,7 +120,7 @@ var collect = function() {
 				position : { x : startRect.left, y : startRect.top },
 				anchor : { x : startRect.left, y : startRect.top },
 				velocity : { x : 0, y : 0 },
-				mass : 3
+				mass : anchorMass
 			}
 
 			return particle;
@@ -173,7 +174,6 @@ document.querySelector('#particleSize').addEventListener('input', function(e) {
 	var v = this.value;
 
 	p.forEach(function(o) {
-		console.log(this.value);
 		o.style.width = v + 'px';
 		o.style.height = v + 'px';
 	});
@@ -188,5 +188,12 @@ document.querySelector('#numParticles').addEventListener('input', function(e) {
 	particleGenerator(this.value);
 
 	particles = collect();
+});
+
+document.querySelector('#anchorMass').addEventListener('input', function(e) {
+	var v = this.value;
+	particles.forEach(function(o) {
+		o.mass = v;
+	})
 })
 
