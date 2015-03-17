@@ -48,5 +48,10 @@ document.querySelector('#vectors').addEventListener('change', function(e) {
 
 document.querySelector('#smbh').addEventListener('change', function(e) {
 	w.centralGravity = this.checked;
+});
+
+document.querySelector('#clear').addEventListener('click', function(e) {
+	e.preventDefault();
+	w.objects = [];
 })
 
