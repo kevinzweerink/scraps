@@ -45,7 +45,7 @@ var World = function(c) {
 
 	this._drawDragGuide = function() {
 		this.context.beginPath();
-		this.context.arc(this.d1x, this.d1y, this.dragParticleRadius, 0, 2 * Math.PI, false);
+		this.context.arc(this.d1x, this.d1y, 3, 0, 2 * Math.PI, false);
 		this.context.strokeStyle = this.particleColor;
 		this.context.lineWidth = 1;
 		this.context.stroke()
@@ -54,6 +54,11 @@ var World = function(c) {
 		this.context.moveTo(this.d1x, this.d1y);
 		this.context.lineTo(CONST.x, CONST.y);
 		this.context.stroke();
+
+		this.context.beginPath();
+		this.context.arc(CONST.x, CONST.y, this.dragParticleRadius, 0, 2*Math.PI, false);
+		this.context.stroke();
+
 	}
 
 	this._drawVectors = function() {
@@ -233,7 +238,7 @@ var World = function(c) {
 		var dragSpeed = 0.1 * Math.sqrt(dvx * dvx + dvy * dvy);
 		var mass = Math.PI * (this.dragParticleRadius * this.dragParticleRadius);
 
-		var p = Particle.create(this.d1x, this.d1y, dragSpeed, dragAngle, this.dragParticleRadius, this.dragParticleRadius);
+		var p = Particle.create(this.d2x, this.d2y, dragSpeed, dragAngle, this.dragParticleRadius, this.dragParticleRadius);
 		this.objects.push(p);
 	}
 
