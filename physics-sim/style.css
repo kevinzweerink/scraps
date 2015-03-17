@@ -1,0 +1,118 @@
+html, body {
+	margin:0;
+	background: #111;
+}
+
+#world {
+	display: block;
+}
+
+.controls {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 100;
+	background: #111;
+	border-top: 1px solid rgba(255,255,255,0.5);
+	padding: 1rem;
+	color: #FFF;
+}
+
+.controls label {
+	vertical-align: center;
+	font-family: helvetica, sans-serif;
+	font-weight: 300;
+	font-size: .75rem;
+	line-height: 1;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: -7px 0;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 2px;
+  cursor: pointer;
+  box-shadow: none;
+  background: #ffffff;
+  border-radius: 0px;
+  border: 0px solid rgba(0, 0, 0, 0);
+}
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: none;
+  border: none;
+  height: 7px;
+  width: 7px;
+  border-radius: 50px;
+  background: #ffffff;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -3.5px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #ffffff;
+}
+input[type=range]::-moz-range-track {
+  height: 3px;
+  cursor: pointer;
+  box-shadow: none;
+  background: #ffffff;
+  border-radius: 0px;
+  border: 0px solid rgba(0, 0, 0, 0);
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: none;
+  border: none;
+  height: 7px;
+  width: 7px;
+  border-radius: 50px;
+  background: #ffffff;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  height: 3px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #bfbfbf;
+  border: 0px solid rgba(0, 0, 0, 0);
+  border-radius: 0px;
+  box-shadow: none;
+}
+input[type=range]::-ms-fill-upper {
+  background: #ffffff;
+  border: none;
+  border-radius: 0px;
+  box-shadow: none;
+}
+input[type=range]::-ms-thumb {
+  box-shadow: none;
+  border: none;
+  height: 7px;
+  width: 7px;
+  border-radius: 50px;
+  background: #ffffff;
+  cursor: pointer;
+  height: 3px;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #ffffff;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #ffffff;
+}
+
+.controls input {
+	margin-right: 2rem;
+	margin-left: .5rem;
+	vertical-align: middle;
+}

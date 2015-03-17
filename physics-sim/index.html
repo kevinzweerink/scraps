@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Kevin's Physics World</title>
+	<link href='style.css' rel='stylesheet'>
+</head>
+<body>
+<canvas id='world'></canvas>
+<div class='controls'>
+	<label>K</label>
+	<input type='range' min='0.01' max='0.5' step='0.01'value='0.05' id='k'>
+	
+	<label>Damping</label>
+	<input type='range' min='0.5' max='0.99' step='0.01'value ='0.99' id='friction'>
+
+	<label>Particles</label>
+	<input type='range' min='10' max='100' value='40' id='numParticles'>
+
+	<label>Show Connections</label>
+	<input type='checkbox' id='connectors' checked>
+
+	<label>Show Vectors</label>
+	<input type='checkbox' id='vectors' checked>
+
+	<label>SMBH</label>
+	<input type='checkbox' id='smbh'>
+
+</div>
+<script src='const.js'></script>
+<script src='object.js'></script>
+<script src='world.js'></script>
+<script src='editor.js'></script>
+<script type="text/javascript">
+	var worldStage = document.getElementById('world');
+
+	worldStage.style.width = window.innerWidth + 'px';
+	worldStage.style.height = window.innerHeight + 'px';
+
+	worldStage.width = worldStage.clientWidth;
+	worldStage.height = worldStage.clientHeight;
+
+	var w = new World(worldStage);
+	w.particleAttraction = true;
+	// w.centralGravity = true;
+	w.showRanges = true;
+	w.emitter.radius = 3;
+	w.emitter.rangeMin = -5;
+	w.emitter.y = w.h * .5;
+	w.emitter.rangeMax = 5;
+	w.emitter.max = 40;
+	w.emitting = true;
+</script>
+</body>
+</html>
