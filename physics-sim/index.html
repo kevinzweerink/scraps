@@ -7,6 +7,7 @@
 <body>
 <canvas id='world'></canvas>
 <div class='controls'>
+	<div class='sliders'>
 	<label>K</label>
 	<input type='range' min='0.01' max='0.5' step='0.01'value='0.05' id='k'>
 	
@@ -16,6 +17,13 @@
 	<label>Particles</label>
 	<input type='range' min='10' max='100' value='40' id='numParticles'>
 
+	<label>Particle Lifespan</label>
+	<input type='range' min='100' max='1000' value='1000' id='lifespan'>
+	<a class='btn' id='clear' href='#'>Reset</a>
+	
+	</div>
+
+	<div class='checks'>
 	<label>Show Connections</label>
 	<input type='checkbox' id='connectors' checked>
 
@@ -25,7 +33,13 @@
 	<label>SMBH</label>
 	<input type='checkbox' id='smbh'>
 
-	<a class='btn' id='clear' href='#'>Reset</a>
+	<label>Walls</label>
+	<input type='checkbox' id='walls'>
+
+	<label>Random Spawn</label>
+	<input type='checkbox' id='random' checked>
+
+	</div>
 
 </div>
 <script src='const.js'></script>
@@ -36,7 +50,7 @@
 	var worldStage = document.getElementById('world');
 
 	worldStage.style.width = window.innerWidth + 'px';
-	worldStage.style.height = window.innerHeight + 'px';
+	worldStage.style.height = window.innerHeight - document.querySelector('.controls').clientHeight + 'px';
 
 	worldStage.width = worldStage.clientWidth;
 	worldStage.height = worldStage.clientHeight;
@@ -50,6 +64,7 @@
 	w.emitter.y = w.h * .5;
 	w.emitter.rangeMax = 5;
 	w.emitter.max = 40;
+	w.emitter.randomSpawn = true;
 	w.emitting = true;
 </script>
 </body>

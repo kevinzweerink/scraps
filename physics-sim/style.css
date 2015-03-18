@@ -1,6 +1,7 @@
 html, body {
 	margin:0;
 	background: #111;
+	overflow: hidden;
 }
 
 #world {
@@ -8,6 +9,9 @@ html, body {
 }
 
 .controls {
+	-webkit-transition: height .15s ease;
+	transition: height .15s ease;
+
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	position: absolute;
@@ -20,12 +24,22 @@ html, body {
 	padding: 1rem;
 	color: #FFF;
 
+	height: 3rem;
+
 	-webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.controls:hover {
+	height: 5rem;
+}
+
+.sliders {
+	margin-bottom: 1rem;
 }
 
 .controls label, .btn {

@@ -50,6 +50,21 @@ document.querySelector('#smbh').addEventListener('change', function(e) {
 	w.centralGravity = this.checked;
 });
 
+document.querySelector('#lifespan').addEventListener('change', function(e) {
+	var v = this.value;
+	if (this.value > 900)
+		v = Infinity;
+	w.particleLifespan = v;
+});
+
+document.querySelector('#walls').addEventListener('change', function(e) {
+	w.walls = this.checked;
+})
+
+document.querySelector('#random').addEventListener('change', function(e) {
+	w.emitter.randomSpawn = this.checked;
+})
+
 document.querySelector('#clear').addEventListener('click', function(e) {
 	e.preventDefault();
 	w.objects = [];

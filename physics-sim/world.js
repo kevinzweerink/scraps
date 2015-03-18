@@ -8,7 +8,8 @@ var World = function(c) {
 	this.particleAttraction = true;
 	this.particleCollision = true;
 	this.showVectors = true;
-
+	this.walls = false;
+	this.particleLifespan = Infinity;
 	this.center = Particle.create(this.w/2, this.h * .3333, 0, 0, 100, 0)
 
 	this.centralGravity = false;
@@ -22,6 +23,7 @@ var World = function(c) {
 		x : this.w/2,
 		y : this.h,
 		max : 300,
+		randomSpawn : false
 	}
 
 	this.gravity = 0;
@@ -190,10 +192,16 @@ var World = function(c) {
 
 				if (this.particleCollision)
 					o.collide(oPrime);
+
+				if (this.walls)
+					o.wall(this.w, this.h);
 			}
 
 			o.vy += this.gravity;
 			o.update();
+
+			if (o.age > this.particleLifespan)
+				this.objects.splice(i, 1);
 		}
 	}
 
@@ -209,9 +217,15 @@ var World = function(c) {
 		}
 
 		if (this.objects.length < this.emitter.max) {
+			var startx = this.emitter.x;
+			var starty = this.emitter.y;
+			if (this.emitter.randomSpawn) {
+				startx = Math.random() * this.w;
+				starty = Math.random() * this.h;
+			}
 			var startvx = (Math.random() * this.emitter.spread) - (this.emitter.spread/2);
 			var startvy = -1 * ((Math.random() * (this.emitter.rangeMax - this.emitter.rangeMin)) + this.emitter.rangeMin);
-			var p = Particle.create(this.emitter.x, this.emitter.y, 0, 0, 1, this.emitter.radius);
+			var p = Particle.create(startx, starty, 0, 0, 1, this.emitter.radius);
 			p.vx = startvx;
 			p.vy = startvy;
 			this.objects.push(p);

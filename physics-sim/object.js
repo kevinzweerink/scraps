@@ -6,6 +6,7 @@ var Particle = {
 	mass : 1,
 	radius : 5,
 	inert : false,
+	age : 0,
 
 	create : function(x, y, speed, direction, mass, radius) {
 		var p = Object.create(this),
@@ -24,6 +25,7 @@ var Particle = {
 	update : function() {
 		this.x += this.vx;
 		this.y += this.vy;
+		this.age++;
 	},
 
 	collide : function(p1) {
@@ -54,6 +56,28 @@ var Particle = {
 				p0.vy = Math.sin(incidence) * p0newvx + Math.sin(incidence + Math.PI/2) * p0newvy;
 				p1.vx = Math.cos(incidence) * p1newvx + Math.cos(incidence + Math.PI/2) * p1newvy;
 				p1.vy = Math.sin(incidence) * p1newvx + Math.sin(incidence + Math.PI/2) * p1newvy;
+	},
+
+	wall : function(x, y) {
+		if (this.x + this.vx < 0 + this.radius) {
+			this.x = this.radius;
+			this.vx *= -CONST.friction;
+		}
+
+		if (this.x + this.vx > x - this.radius) {
+			this.x = x - this.radius;
+			this.vx *= -CONST.friction;
+		}
+
+		if (this.y + this.vy < 0 + this.radius) {
+			this.y = this.radius;
+			this.vy *= -CONST.friction
+		}
+
+		if (this.y  + this.vy > y - this.radius) {
+			this.y = y - this.radius;
+			this.vy *= -CONST.friction;
+		}
 	},
 
 	damp : function() {
