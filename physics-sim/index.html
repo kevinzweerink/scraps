@@ -3,6 +3,9 @@
 <head>
 	<title>Kevin's Physics World</title>
 	<link href='style.css' rel='stylesheet'>
+
+	<script src="//use.typekit.net/thv4cxy.js"></script>
+	<script>try{Typekit.load();}catch(e){}</script>
 </head>
 <body>
 <canvas id='world'></canvas>
@@ -24,20 +27,31 @@
 	</div>
 
 	<div class='checks'>
-	<label>Show Connections</label>
+
+	<fieldset>
 	<input type='checkbox' id='connectors' checked>
+	<label for='connectors'>Show Connections</label>
+	</fieldset>
 
-	<label>Show Vectors</label>
+	<fieldset>
 	<input type='checkbox' id='vectors' checked>
+	<label for='vectors'>Show Vectors</label>
+	</fieldset>
 
-	<label>SMBH</label>
+	<fieldset>
 	<input type='checkbox' id='smbh'>
+	<label for='smbh'>SMBH</label>
+	</fieldset>
 
-	<label>Walls</label>
+	<fieldset>
 	<input type='checkbox' id='walls'>
+	<label for='walls'>Walls</label>
+	</fieldset>
 
-	<label>Random Spawn</label>
+	<fieldset>
 	<input type='checkbox' id='random' checked>
+	<label for='random'>Random Spawn</label>
+	</fieldset>
 
 	</div>
 

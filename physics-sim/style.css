@@ -35,16 +35,23 @@ html, body {
 }
 
 .controls:hover {
-	height: 5rem;
+	height: 5.5rem;
 }
 
 .sliders {
-	margin-bottom: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+fieldset {
+	display: inline-block;
+	padding: 0;
+	margin: 0 1rem 0 0;
+	border: none;
 }
 
 .controls label, .btn {
 	vertical-align: center;
-	font-family: helvetica, sans-serif;
+	font-family: 'adelle-sans', helvetica, sans-serif;
 	font-weight: 300;
 	font-size: .75rem;
 	line-height: 1;
@@ -68,6 +75,34 @@ html, body {
 	float: right;
 }
 
+input[type=checkbox] {
+	position: absolute;
+	top: -99999px;
+	left: -99999px;
+}
+
+input[type=checkbox] ~ label {
+	padding: .25rem .5rem;
+	border: 1px solid #FFF;
+	border-radius: 4px;
+	opacity: 0.6;
+	cursor: pointer;
+}
+
+input[type=checkbox] ~ label::before {
+	content: '\2713';
+	margin-right: .5rem;
+	opacity: .1;
+}
+
+input[type=checkbox]:checked ~ label::before {
+	opacity: 1;
+}
+
+input[type=checkbox]:checked ~ label {
+	opacity: 1;
+}
+
 input[type=range] {
   -webkit-appearance: none;
   margin: -7px 0;
@@ -86,13 +121,13 @@ input[type=range]::-webkit-slider-runnable-track {
 input[type=range]::-webkit-slider-thumb {
   box-shadow: none;
   border: none;
-  height: 7px;
-  width: 7px;
+  height: 12px;
+  width: 12px;
   border-radius: 50px;
   background: #ffffff;
   cursor: pointer;
   -webkit-appearance: none;
-  margin-top: -3.5px;
+  margin-top: -6px;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
   background: #ffffff;
@@ -108,8 +143,8 @@ input[type=range]::-moz-range-track {
 input[type=range]::-moz-range-thumb {
   box-shadow: none;
   border: none;
-  height: 7px;
-  width: 7px;
+  height: 12px;
+  width: 12px;
   border-radius: 50px;
   background: #ffffff;
   cursor: pointer;
@@ -136,8 +171,8 @@ input[type=range]::-ms-fill-upper {
 input[type=range]::-ms-thumb {
   box-shadow: none;
   border: none;
-  height: 7px;
-  width: 7px;
+  height: 12px;
+  width: 12px;
   border-radius: 50px;
   background: #ffffff;
   cursor: pointer;
