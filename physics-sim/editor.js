@@ -11,9 +11,10 @@
 var ax, ay, bx, by, dragging;
 
 document.querySelector('#world').addEventListener('mousedown', function(e) {
-	console.log(e.clientX, e.clientY);
 	ax = e.clientX;
 	ay = e.clientY;
+
+	clearTimeout(helpModal)
 
 	w.startDragHandler(ax, ay);
 });
@@ -68,5 +69,13 @@ document.querySelector('#random').addEventListener('change', function(e) {
 document.querySelector('#clear').addEventListener('click', function(e) {
 	e.preventDefault();
 	w.objects = [];
-})
+});
+
+var helpModal = window.setTimeout(function() {
+	var modal = document.querySelector('.modal');
+	modal.classList.remove('hidden');
+	modal.querySelector('.dismiss').addEventListener('click', function(e) {
+		modal.classList.add('hidden');
+	});
+}, 10000)
 
