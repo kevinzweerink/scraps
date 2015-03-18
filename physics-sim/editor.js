@@ -71,11 +71,61 @@ document.querySelector('#clear').addEventListener('click', function(e) {
 	w.objects = [];
 });
 
+var ModalSpring = {
+	target : 32,
+	start : -32,
+	p : 0,
+	v : 0,
+	bounce : 0.5,
+	damping : 0.6,
+
+	e : new Event('spring'),
+
+	set : function(start, target) {
+		window.clearInterval();
+		this.start = start;
+		this.target = target;
+		this.p = start;
+	},
+
+	release : function() {
+		this.tick();
+		window.setInterval(function() {
+			if (ModalSpring.v > 0.0001 || Math.abs(ModalSpring.target - ModalSpring.p) > 0.0001 ) {
+				ModalSpring.tick();
+			} else {
+				this.clearInterval();
+			}
+		}, 16);
+	},
+
+	tick : function() {
+		var dist = this.target - this.p;
+		var force = this.bounce * dist;
+		this.v += force;
+		this.v *= this.damping;
+		this.p += this.v;
+
+		window.dispatchEvent(this.e)
+	}
+}
+
+var modal = document.querySelector('.modal');
+
+window.addEventListener('spring', function(e) {
+	modal.style.top = ModalSpring.p + 'px';
+});
+
 var helpModal = window.setTimeout(function() {
-	var modal = document.querySelector('.modal');
 	modal.classList.remove('hidden');
+	ModalSpring.set(-150,32);
+	ModalSpring.release();
+
 	modal.querySelector('.dismiss').addEventListener('click', function(e) {
 		modal.classList.add('hidden');
+		ModalSpring.set(32, -150);
+		ModalSpring.release();
 	});
+
 }, 10000)
 

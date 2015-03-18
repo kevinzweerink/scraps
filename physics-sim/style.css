@@ -10,20 +10,25 @@ html, body {
 }
 
 .modal.hidden {
-	top: -4rem;
 	opacity: 0;
+
+	-webkit-transition: opacity .2s ease;
+	-moz-transition: opacity .2s ease;
+	transition: opacity .2s ease;
+	
 }
 
 .modal {
-	-webkit-transition: top .3s cubic-bezier(.64,-0.26,.41,1.26), opacity .2s ease;
-	-moz-transition: top .3s cubic-bezier(.64,-0.26,.41,1.26), opacity .2s ease;
-	transition: top .3s cubic-bezier(.64,-0.26,.41,1.26), opacity .2s ease;
+
+	-webkit-transition: opacity .2s ease;
+	-moz-transition: opacity .2s ease;
+	transition: opacity .2s ease;
 
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 
 	position: absolute;
-	top: 2rem;
+	top: -4rem;
 	right: 2rem;
 	z-index: 100;
 	background: #111;
