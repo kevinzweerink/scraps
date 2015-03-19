@@ -169,6 +169,7 @@ input[type=checkbox]:checked ~ label {
 input[type=range] {
   -webkit-appearance: none;
   margin: -7px 0;
+  width: 7%;
 }
 input[type=range]:focus {
   outline: none;

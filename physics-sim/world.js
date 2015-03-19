@@ -4,13 +4,13 @@ var World = function(c) {
 	this.h = c.getBoundingClientRect().height;
 	this.stage = c;
 	this.context = c.getContext('2d');
-	this.particleColor = 'rgba(255,255,255,1)';
 	this.particleAttraction = true;
 	this.particleCollision = true;
 	this.showVectors = true;
 	this.walls = false;
 	this.particleLifespan = Infinity;
 	this.center = Particle.create(this.w/2, this.h * .3333, 0, 0, 100, 0)
+	this.particleColor = 'rgba(255,255,255,1)';
 
 	this.centralGravity = false;
 
@@ -38,10 +38,10 @@ var World = function(c) {
 		}
 	}
 
-	this._drawCircle = function(x, y, r) {
+	this._drawCircle = function(x, y, r, c) {
 		this.context.beginPath();
 		this.context.arc(x, y, r, 0, 2 * Math.PI, false);
-		this.context.fillStyle = this.particleColor;
+		this.context.fillStyle = c;
 		this.context.fill();
 	}
 
@@ -164,7 +164,7 @@ var World = function(c) {
 
 		for (var i = 0; i < this.objects.length; ++i) {
 			var o = this.objects[i];
-			this._drawCircle(o.x, o.y, o.radius);
+			this._drawCircle(o.x, o.y, o.radius, o.color);
 		}
 	}
 
@@ -173,11 +173,11 @@ var World = function(c) {
 			this.emit();
 
 		for (var i = 0; i < this.objects.length; ++i) {
-			var o = this.objects[i];
-			o.damp();
+			var p0 = this.objects[i];
+			p0.damp();
 
 			if (this.centralGravity) {
-				o.pull(this.center);
+				p0.pull(this.center);
 			}
 
 			for (var j = 0; j < this.objects.length; ++j) {
@@ -185,22 +185,25 @@ var World = function(c) {
 				if (i == j)
 					continue;
 
-				var oPrime = this.objects[j];
+				var p1 = this.objects[j];
 
-				if (this.particleAttraction)
-					o.pull(oPrime);
+				p0.solveOverlap(p1);
+
+				if (this.particleAttraction )
+					p0.pull(p1);
+
+				if (this.walls) {
+					p0.wall(this.w, this.h);
+				}
 
 				if (this.particleCollision)
-					o.collide(oPrime);
-
-				if (this.walls)
-					o.wall(this.w, this.h);
+					p0.collide(p1);
 			}
 
-			o.vy += this.gravity;
-			o.update();
+			p0.vy += this.gravity;
+			p0.update();
 
-			if (o.age > this.particleLifespan)
+			if (p0.age > this.particleLifespan)
 				this.objects.splice(i, 1);
 		}
 	}

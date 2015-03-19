@@ -28,11 +28,18 @@ document.querySelector('#world').addEventListener('mouseup', function(e) {
 
 document.querySelector('#k').addEventListener('input', function(e) {
 	CONST.g = parseFloat(this.value);
-	console.log(CONST.g);
+});
+
+document.querySelector('#damping').addEventListener('input', function(e) {
+	CONST.damping = 1 - parseFloat(this.value);
 });
 
 document.querySelector('#friction').addEventListener('input', function(e) {
-	CONST.friction = parseFloat(this.value);
+	CONST.friction = 1 - parseFloat(this.value);
+});
+
+document.querySelector('#restitution').addEventListener('input', function(e) {
+	CONST.restitution = parseFloat(this.value);
 });
 
 document.querySelector('#numParticles').addEventListener('input', function(e) {
