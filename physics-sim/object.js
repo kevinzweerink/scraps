@@ -109,6 +109,12 @@ var Particle = {
 		if (dist - p0.radius - p1.radius >= 0 )
 			return;
 
+		if (dist - p0.radius - p1.radius === 0){
+			p0.vx *= -1;
+			p0.vy *= -1;
+			return;
+		}
+
 		var scaledDist = dist - p0.radius - p1.radius,
 				distScalar = scaledDist/dist,
 				sdvx = dvx * distScalar,

@@ -175,6 +175,7 @@ var World = function(c) {
 		for (var i = 0; i < this.objects.length; ++i) {
 			var p0 = this.objects[i];
 			p0.damp();
+			p0.vy += this.gravity;
 
 			if (this.centralGravity) {
 				p0.pull(this.center);
@@ -200,7 +201,6 @@ var World = function(c) {
 					p0.collide(p1);
 			}
 
-			p0.vy += this.gravity;
 			p0.update();
 
 			if (p0.age > this.particleLifespan)

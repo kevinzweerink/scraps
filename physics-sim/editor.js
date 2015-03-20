@@ -78,6 +78,14 @@ document.querySelector('#clear').addEventListener('click', function(e) {
 	w.objects = [];
 });
 
+document.querySelector('#particleGravity').addEventListener('change', function(e) {
+	w.particleAttraction = this.checked;
+})
+
+document.querySelector('#verticalGravity').addEventListener('change', function(e) {
+	w.gravity = this.checked * 0.3;
+})
+
 var ModalSpring = {
 	target : 32,
 	start : -32,
