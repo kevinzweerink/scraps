@@ -66,9 +66,43 @@ var tesseractVertices = [
 	[0,0,1,1],
 	[1,0,1,1],
 	[1,1,1,1],
-	[0,1,1,1],
+	[0,1,1,1]
 
 ];
+
+var tesseractPlanes = [
+	// First Cube
+	[0,1,2,3],
+	[4,5,6,7],
+	[0,3,4,7],
+	[1,2,6,5],
+	[3,2,6,7],
+	[0,1,5,4],
+
+	// Big cube
+	[8,9,10,11],
+	[12,13,14,15],
+	[8,11,15,12],
+	[9,10,14,13],
+	[8,9,13,12],
+	[11,10,14,15],
+
+	// Adjoining Planes
+	[11,3,0,8],
+	[15,12,4,7],
+	[6,14,5,13],
+	[10,9,1,2],
+
+	[11,10,2,3],
+	[10,14,6,2],
+	[14,15,7,6],
+	[7,3,11,15],
+
+	[12,13,5,4],
+	[13,9,1,5],
+	[8,9,1,0],
+	[8,12,4,0]
+]
 
 var tesseractFaces = [
 
@@ -195,17 +229,24 @@ var tesseractState = tesseractVertices.map(function(t) {
 	)
 });
 
+var tesseractPlaneObjects = tesseractPlanes.map(function(p) {
+	var planeGeometry = new THREE.PlaneGeometry(10,10,1);
+	var plane = new THREE.Mesh(planeGeometry, faceMaterial);
+	scene.add(plane);
+	return plane;
+});
+
 var tesseractGeom = geometryFrom4dVerticesAndFaces(tesseractState, tesseractFaces, 1);
 tesseract = new THREE.Mesh(tesseractGeom, wireframe);
 tesseractFaces = new THREE.Mesh(tesseractGeom, faceMaterial);
 scene.add(tesseract);
-scene.add(tesseractFaces);
+// scene.add(tesseractFaces);
 
 tesseract.rotation.x = Math.PI/10;
 tesseract.rotation.y = Math.PI/4;
 
-tesseractFaces.rotation.x = tesseract.rotation.x;
-tesseractFaces.rotation.y = tesseract.rotation.y;
+tesseractPlaneObjects.forEach(function(p) { p.rotation.x = tesseract.rotation.x; p.rotation.y = tesseract.rotation.y });
+
 
 var key = new THREE.DirectionalLight(0xFFFFFF, 1);
 var fill = new THREE.DirectionalLight(0xFFFFFF, 0.3);
@@ -226,7 +267,21 @@ function rotateTesseract() {
 
 	var projectedTesseractState = tesseractState.map(function(v) {
 		return vector4ToVector3(v);
-	})
+	});
+
+	tesseractPlaneObjects.forEach(function(p,i) {
+		p.geometry.vertices = tesseractPlanes[i].map(function(tp) {
+			return projectedTesseractState[tp];
+		});
+
+		var triangles = THREE.Shape.Utils.triangulateShape(p.geometry.vertices, []);
+		p.geometry.faces = triangles.map(function(t) {
+			return new THREE.Face3(t[0],t[1],t[2]);
+		});
+
+		p.geometry.elementsNeedUpdate = true;
+		p.geometry.verticesNeedUpdate = true;
+	});
 
 	tesseract.geometry.vertices = projectedTesseractState;
 	tesseract.geometry.verticesNeedUpdate = true;
