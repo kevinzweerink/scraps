@@ -14,7 +14,7 @@ var torusGeometry = new THREE.TorusGeometry(100,10,100,100),
 		torus = new THREE.Mesh(torusGeometry, material),
 		cubeGeometry = new THREE.IcosahedronGeometry(50,0),
 		cube = new THREE.Mesh(cubeGeometry, material),
-		sphereGeometry = new THREE.SphereGeometry(10,30,30),
+		sphereGeometry = new THREE.BoxGeometry(10,10,10),
 		lamp = new THREE.DirectionalLight(0x2E62FF, 0.75),
 		base = new THREE.DirectionalLight(0xFF432E, 0.75),
 		sun = new THREE.DirectionalLight(0xA6FFF3, 0.75),
@@ -68,6 +68,7 @@ function spheres(n) {
 		sphere.vx = Math.random() * 10 - 5;
 		sphere.vy = Math.random() * 10 - 5;
 		sphere.vz = Math.random() * 10 - 5;
+		sphere.rotation.x = Math.PI/4;
 		scene.add(sphere);
 		spheres.push(sphere);
 	}
@@ -89,6 +90,9 @@ function updateSphere(s) {
 	s.pos.setX(s.position.x);
 	s.pos.setY(s.position.y);
 	s.pos.setZ(s.position.z);
+
+	s.rotation.y += 0.03;
+	s.rotation.x += 0.03;
 
 	s.dist = s.pos.length();
 
@@ -114,6 +118,7 @@ function render() {
 	}
 	torus.rotation.y += 0.03;
 	torus.rotation.x += 0.03;
+
 	cube.rotation.y += 0.1;
 	controls.update();
 	renderer.render(scene, cam);

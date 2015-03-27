@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<title>Tesseract</title>
+		<link href='style.css' rel='stylesheet'>
+		<script src="//use.typekit.net/thv4cxy.js"></script>
+		<script>try{Typekit.load();}catch(e){}</script>
+	</head>
+	<body>
+	<div class='controls'>
+
+			<label for='wireframe'>Wireframe</label>
+			<input type='checkbox' id='wireframe' checked>
+
+			<label for='faces'>Faces</label>
+			<input type='checkbox' id='faces' checked>
+
+			<label for='xw'>XW Rotation</label>
+			<input type='checkbox' id='xw'>
+
+			<label for='yw'>YW Rotation</label>
+			<input type='checkbox' id='yw'>
+
+			<label for='zw'>ZW Rotation</label>
+			<input type='checkbox' id='zw' checked>
+
+			<label for='speed'>Rotation Speed</label>
+			<input type='range' min='100' max='400' value='200' id='speed'>
+
+	</div>
+
+		<script src="js/three.min.js"></script>
+		<script src="js/three.trackball.js"></script>
+		<script src="js/main.js"></script>
+	</body>
+</html>
