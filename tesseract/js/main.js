@@ -338,9 +338,9 @@ document.querySelector('#wireframe').addEventListener('change', function(e) {
 
 document.querySelector('#faces').addEventListener('change', function(e) {
 	if (this.checked)
-		tesseractFaces.visible = true;
+		tesseractPlaneObjects.forEach(function(p) { p.visible = true; });
 	else
-		tesseractFaces.visible = false;
+		tesseractPlaneObjects.forEach(function(p) { p.visible = false; });
 });
 
 document.querySelector('#xw').addEventListener('change', function(e) {
