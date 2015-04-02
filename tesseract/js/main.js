@@ -3,14 +3,16 @@ var scene = new THREE.Scene(),
 		h = window.innerHeight - document.querySelector('.controls').getBoundingClientRect().height,
 		cam = new THREE.OrthographicCamera( w / - 2, w / 2, h / 2, h / - 2, -2000, 2000 ),
 		cam = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 ),
-		renderer = new THREE.WebGLRenderer();
+		renderer = new THREE.WebGLRenderer({
+			antialias : true
+		});
 
 cam.position.z = 500;
 
 renderer.setSize(w, h);
 document.body.appendChild(renderer.domElement);
 
-var faceMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF, opacity: 0.05, transparent: true, side: THREE.DoubleSide});
+var faceMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF, opacity: .1, transparent: true, side: THREE.DoubleSide});
 var wireframe = new THREE.MeshBasicMaterial({color: 0xFFFFFF, wireframe: true});
 var line = new THREE.LineBasicMaterial({color: 0xFFFFFF});
 
@@ -74,7 +76,7 @@ var tesseractPlanes = [
 	// First Cube
 	[0,1,2,3],
 	[4,5,6,7],
-	[0,3,4,7],
+	[0,3,7,4],
 	[1,2,6,5],
 	[3,2,6,7],
 	[0,1,5,4],
@@ -90,7 +92,7 @@ var tesseractPlanes = [
 	// Adjoining Planes
 	[11,3,0,8],
 	[15,12,4,7],
-	[6,14,5,13],
+	[6,14,13,5],
 	[10,9,1,2],
 
 	[11,10,2,3],
@@ -217,7 +219,6 @@ var yw = new THREE.Matrix4();
 
 updateMatrices(Math.PI/200);
 
-
 var tesseractRotationMatrix = zw;
 
 var tesseractState = tesseractVertices.map(function(t) {
@@ -238,27 +239,12 @@ var tesseractPlaneObjects = tesseractPlanes.map(function(p) {
 
 var tesseractGeom = geometryFrom4dVerticesAndFaces(tesseractState, tesseractFaces, 1);
 tesseract = new THREE.Mesh(tesseractGeom, wireframe);
-tesseractFaces = new THREE.Mesh(tesseractGeom, faceMaterial);
 scene.add(tesseract);
-// scene.add(tesseractFaces);
 
 tesseract.rotation.x = Math.PI/10;
 tesseract.rotation.y = Math.PI/4;
 
 tesseractPlaneObjects.forEach(function(p) { p.rotation.x = tesseract.rotation.x; p.rotation.y = tesseract.rotation.y });
-
-
-var key = new THREE.DirectionalLight(0xFFFFFF, 1);
-var fill = new THREE.DirectionalLight(0xFFFFFF, 0.3);
-
-key.position.set(1,1,1);
-fill.position.set(-1,1,1);
-
-scene.add(key);
-scene.add(fill);
-
-var back = false,
-		forward = false;
 
 function rotateTesseract() {
 	tesseractState.forEach(function(v) {
