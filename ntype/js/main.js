@@ -34,9 +34,10 @@ var NType = function(el) {
 		this.camera.position.y = 200;
 		this.camera.lookAt(new THREE.Vector3(0,0,0));
 		this.renderer.setSize(this.w,this.h);
+		this.renderer.setClearColor(0xFFFFFF);
 		document.body.appendChild(this.renderer.domElement);
 		this._matrices.update(this.speed);
-		this.setMatrix(['xw','yz']);
+		this.setMatrix(['xw','yz','yw','zw']);
 	}
 
 	this.addLines = function() {
@@ -66,8 +67,18 @@ var NType = function(el) {
 		}, new THREE.Matrix4());
 	}
 
+	this.clear = function() {
+		var that = this;
+		this.lines.forEach(function(l) {
+			that.scene.remove(l);
+		});
+
+		this.lines = [];
+	}
+
 	this.setShape = function(vertices) {
 		this.sourceShape = vertices;
+		this.clear();
 		this.extrude();
 	}
 
@@ -126,7 +137,7 @@ var NType = function(el) {
 NType.prototype.materials = {
 	wireframe : new THREE.MeshBasicMaterial({color: 0xFFFFFF, wireframe: true}),
 	face : new THREE.MeshBasicMaterial({color: 0xFFFFFF, opacity: .1, transparent: true, side: THREE.DoubleSide}),
-	line : new THREE.LineBasicMaterial({color: 0xFFFFFF})
+	line : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 2})
 }
 
 NType.prototype.utils = {
@@ -232,8 +243,6 @@ NType.prototype.utils = {
 		extruded.joins = extrusion0.joins.concat(extrusion1.joins);
 		extruded.joins = extruded.joins.concat( this.connectCrosses( vertices.length * 2 ) );
 
-		console.log(extruded.joins);
-
 		return extruded;
 	}
 }
@@ -291,27 +300,6 @@ NType.prototype._matrices = {
 	}
 }
 
-var square = [
-	[0,0],
-	[1,0],
-	[1,1],
-	[0,1]
-]
-
-var triangle = [
-	[0,0],
-	[10,0],
-	[5,10]
-]
-
-var pent = [
-	[1,0],
-	[3,0],
-	[4,2.5],
-	[2,4],
-	[0,2.5]
-]
-
 var a = [
 	[0,0],
 	[2,6],
@@ -323,14 +311,20 @@ var a = [
 	[1,0]
 ]
 
-var unitPent = NType.prototype.utils.normalizeVertices(pent);
 
 var unitA = NType.prototype.utils.normalizeVertices(a);
-
-console.log(unitA);
-
-var unitTriangle = NType.prototype.utils.normalizeVertices(triangle);
+var unitB = NType.prototype.utils.normalizeVertices(window.TYPE.B);
+var unitM = NType.prototype.utils.normalizeVertices(window.TYPE.M);
+var unitK = NType.prototype.utils.normalizeVertices(window.TYPE.K);
 
 var ntype = new NType(window);
-ntype.setShape(unitA);
+ntype.setShape(unitK);
 ntype.begin();
+
+window.addEventListener('keyup', function(e) {
+	var key = String.fromCharCode(e.keyCode);
+	if (window.TYPE[key] && window.TYPE[key].length > 0) {
+		var letter = NType.prototype.utils.normalizeVertices(window.TYPE[key]);
+		ntype.setShape(letter);
+	}
+});
