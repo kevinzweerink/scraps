@@ -1,5 +1,6 @@
 window.cos = Math.cos;
 window.sin = Math.sin;
+window.PAUSED = false;
 
 var SimpleDimensionalObject = function() {
 	this.vertices = [];
@@ -132,8 +133,10 @@ var NType = function(el) {
 
 	this.begin = function() {
 		window.requestAnimationFrame(this.begin.bind(this));
-		this.rotate();
-		this.updateLines();
+		if (!window.PAUSED) {
+			this.rotate();
+			this.updateLines();
+		}
 		this.renderer.render(this.scene, this.camera);
 	}
 
@@ -335,5 +338,9 @@ window.addEventListener('keyup', function(e) {
 	if (window.TYPE[key] && window.TYPE[key].length > 0) {
 		var letter = NType.prototype.utils.normalizeVertices(window.TYPE[key]);
 		ntype.setShape(letter);
+	}
+
+	if (e.keyCode == 32) {
+		window.PAUSED = !window.PAUSED;
 	}
 });
