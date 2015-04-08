@@ -26,6 +26,9 @@ var NType = function(el) {
 
 	this.speed = Math.PI/200;
 
+	this.rotationState = 0;
+	this.rotationPlanes = ['xw','yz','yw','zw'];
+
 	// Props
 	this.matrix = new THREE.Matrix4();
 
@@ -37,7 +40,7 @@ var NType = function(el) {
 		this.renderer.setClearColor(0xFFFFFF);
 		document.body.appendChild(this.renderer.domElement);
 		this._matrices.update(this.speed);
-		this.setMatrix(['xw','yz','yw','zw']);
+		this.setMatrix(this.rotationPlanes);
 	}
 
 	this.addLines = function() {
@@ -100,6 +103,8 @@ var NType = function(el) {
 	}
 
 	this.extrude = function() {
+		var that = this;
+
 		this.extrusion = this.utils.extrude4(this.sourceShape);
 		this.vertices = this.extrusion.vertices.map(function(v) {
 			return new THREE.Vector4(
@@ -109,11 +114,13 @@ var NType = function(el) {
 				v[3] - 0.5
 			)
 		});
+
 		this.joins = this.extrusion.joins;
 	}
 
 	this.rotate = function() {
 		var that = this;
+		this.rotationState += this.speed;
 		this.vertices.forEach(function(v) {
 			v.applyMatrix4(that.matrix)
 		});
@@ -297,6 +304,8 @@ NType.prototype._matrices = {
 				0,      0,      1,      0,
 				0, sin(t),      0,  cos(t)
 		)
+
+
 	}
 }
 
