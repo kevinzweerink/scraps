@@ -312,25 +312,10 @@ NType.prototype._matrices = {
 	}
 }
 
-var a = [
-	[0,0],
-	[2,6],
-	[3,6],
-	[5,0],
-	[4,0],
-	[3.4, 2],
-	[1.6, 2],
-	[1,0]
-]
-
-
-var unitA = NType.prototype.utils.normalizeVertices(a);
-var unitB = NType.prototype.utils.normalizeVertices(window.TYPE.B);
-var unitM = NType.prototype.utils.normalizeVertices(window.TYPE.M);
-var unitK = NType.prototype.utils.normalizeVertices(window.TYPE.K);
+var unitH = NType.prototype.utils.normalizeVertices(window.TYPE.H);
 
 var ntype = new NType(window);
-ntype.setShape(unitK);
+ntype.setShape(unitH);
 ntype.begin();
 
 window.addEventListener('keyup', function(e) {
@@ -341,6 +326,7 @@ window.addEventListener('keyup', function(e) {
 	}
 
 	if (e.keyCode == 32) {
+		e.preventDefault();
 		window.PAUSED = !window.PAUSED;
 	}
 });
