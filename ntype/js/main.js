@@ -5,6 +5,8 @@ window.PAUSED = false;
 var SimpleDimensionalObject = function() {
 	this.vertices = [];
 	this.joins = [];
+	this.lines = [];
+	this.projection = [];
 }
 
 var NType = function(el) {
@@ -14,16 +16,12 @@ var NType = function(el) {
 	this.h = window.innerHeight;
 	this.ORTHO = new THREE.OrthographicCamera( this.w / - 2, this.w / 2, this.h / 2, this.h / - 2, -2000, 2000 );
 	this.PERSP = new THREE.PerspectiveCamera( 75, this.w / this.h, 0.1, 1000 );
-	this.camera = this.PERSP;
+	this.camera = this.ORTHO;
 	this.renderer = new THREE.WebGLRenderer({
 		antialias : true
 	});
-	this.sourceShape = [];
-	this.extrusion = [];
-	this.vertices = [];
-	this.joins = [];
-	this.projection = [];
-	this.lines = [];
+
+	this.shapes = [];
 
 	this.speed = Math.PI/200;
 
@@ -44,12 +42,12 @@ var NType = function(el) {
 		this.setMatrix(this.rotationPlanes);
 	}
 
-	this.addLines = function() {
+	this.addLines = function(s) {
 		var that = this;
-		this.lines = this.joins.map(function(j, i) {
+		s.lines = s.joins.map(function(j, i) {
 			var lineGeo = new THREE.Geometry();
 			lineGeo.vertices = j.map(function(v) {
-				return that.projection[v];
+				return s.projection[v];
 			});
 
 			var lineMaterial = that.materials.line;
@@ -71,43 +69,36 @@ var NType = function(el) {
 		}, new THREE.Matrix4());
 	}
 
-	this.clear = function() {
-		var that = this;
-		this.lines.forEach(function(l) {
-			that.scene.remove(l);
-		});
+	this.addShape = function(vertices) {
+		this.shapes.push(this.extrude(vertices));
 
-		this.lines = [];
-	}
-
-	this.setShape = function(vertices) {
-		this.sourceShape = vertices;
-		this.clear();
-		this.extrude();
 	}
 
 	this.updateLines = function() {
-		if (this.lines.length == 0)
-			this.addLines();
 
 		var that = this;
 
-		this.lines.forEach(function(l, i) {
-			// each vertex corresponds to part of the joins array at the
-			// same position as this iteration
-			l.geometry.vertices = that.joins[i].reduce(function(a, j) {
-				a.push(that.projection[j]);
-				return a;
-			}, []);
-			l.geometry.verticesNeedUpdate = true;
+		this.shapes.forEach(function(s){
+			if (s.lines.length == 0)
+				that.addLines(s);
+
+			s.lines.forEach(function(l, i) {
+				// each vertex corresponds to part of the joins array at the
+				// same position as this iteration
+				l.geometry.vertices = s.joins[i].reduce(function(a, j) {
+					a.push(s.projection[j]);
+					return a;
+				}, []);
+				l.geometry.verticesNeedUpdate = true;
+			});
 		});
 	}
 
-	this.extrude = function() {
+	this.extrude = function(vertices) {
 		var that = this;
 
-		this.extrusion = this.utils.extrude4(this.sourceShape);
-		this.vertices = this.extrusion.vertices.map(function(v) {
+		var extrusion = this.utils.extrude4(vertices);
+		var vertices = extrusion.vertices.map(function(v) {
 			return new THREE.Vector4(
 				v[0] - 0.5,
 				v[1] - 0.5,
@@ -116,18 +107,48 @@ var NType = function(el) {
 			)
 		});
 
-		this.joins = this.extrusion.joins;
+		var SDO = new SimpleDimensionalObject();
+		SDO.vertices = vertices;
+		SDO.joins = extrusion.joins;
+
+		return SDO;
+	}
+
+	this.backspace = function() {
+		var toRemove = this.shapes.pop();
+		var that = this;
+		toRemove.lines.forEach(function(l) {
+			that.scene.remove(l);
+		})
+
 	}
 
 	this.rotate = function() {
 		var that = this;
 		this.rotationState += this.speed;
-		this.vertices.forEach(function(v) {
-			v.applyMatrix4(that.matrix)
+		this.shapes.forEach(function(s) {
+			s.vertices.forEach(function(v) {
+				v.applyMatrix4(that.matrix)
+			});
 		});
 
-		this.projection = this.vertices.map(function(v) {
-			return that.utils.projectW(v).multiplyScalar(100);
+		var width = this.w / this.shapes.length;
+		if (width > 200)
+			width = 200;
+
+		var pad = width * .7;
+
+		var total = width * this.shapes.length;
+
+		this.shapes.forEach(function(s, i) {
+			s.projection = s.vertices.map(function(v) {
+				var subVector = new THREE.Vector3(
+					(total/2) - (i * width) - (width/2),
+					0,
+					0
+				);
+				return that.utils.projectW(v).multiplyScalar(width - pad).sub(subVector);
+			});
 		});
 	}
 
@@ -315,18 +336,28 @@ NType.prototype._matrices = {
 var unitH = NType.prototype.utils.normalizeVertices(window.TYPE.H);
 
 var ntype = new NType(window);
-ntype.setShape(unitH);
 ntype.begin();
+
+window.addEventListener('keydown', function(e) {
+	if (e.keyCode == 8) {
+		e.preventDefault();
+	}
+});
 
 window.addEventListener('keyup', function(e) {
 	var key = String.fromCharCode(e.keyCode);
 	if (window.TYPE[key] && window.TYPE[key].length > 0) {
 		var letter = NType.prototype.utils.normalizeVertices(window.TYPE[key]);
-		ntype.setShape(letter);
+		ntype.addShape(letter);
 	}
 
 	if (e.keyCode == 32) {
 		e.preventDefault();
 		window.PAUSED = !window.PAUSED;
+	}
+
+	if (e.keyCode == 8) {
+		e.preventDefault();
+		ntype.backspace();
 	}
 });
