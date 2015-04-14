@@ -3,6 +3,7 @@ window.sin = Math.sin;
 window.PAUSED = false;
 
 var SimpleDimensionalObject = function() {
+	this.originalFaceLength = 0;
 	this.vertices = [];
 	this.joins = [];
 	this.lines = [];
@@ -26,7 +27,11 @@ var NType = function(el) {
 	this.speed = Math.PI/200;
 
 	this.rotationState = 0;
-	this.rotationPlanes = ['xw','yz','yw','zw'];
+	this.rotationPlanes = [];
+	this.rotationPlanes.push('yz');
+	this.rotationPlanes.push('zw');
+	this.rotationPlanes.push('xw');
+	this.rotationPlanes.push('yw');
 
 	// Props
 	this.matrix = new THREE.Matrix4();
@@ -45,12 +50,13 @@ var NType = function(el) {
 	this.addLines = function(s) {
 		var that = this;
 		s.lines = s.joins.map(function(j, i) {
+
 			var lineGeo = new THREE.Geometry();
 			lineGeo.vertices = j.map(function(v) {
 				return s.projection[v];
 			});
 
-			var lineMaterial = that.materials.line;
+			var lineMaterial = i < s.originalFaceLength || ( i > (s.originalFaceLength * 4) - 1 && i < s.originalFaceLength * 5  ) ? that.materials.lineHeavy : that.materials.line;
 
 			var line = new THREE.Line(lineGeo, lineMaterial);
 			that.scene.add(line);
@@ -110,6 +116,7 @@ var NType = function(el) {
 		var SDO = new SimpleDimensionalObject();
 		SDO.vertices = vertices;
 		SDO.joins = extrusion.joins;
+		SDO.originalFaceLength = extrusion.originalFaceLength;
 
 		return SDO;
 	}
@@ -168,7 +175,8 @@ var NType = function(el) {
 NType.prototype.materials = {
 	wireframe : new THREE.MeshBasicMaterial({color: 0xFFFFFF, wireframe: true}),
 	face : new THREE.MeshBasicMaterial({color: 0xFFFFFF, opacity: .1, transparent: true, side: THREE.DoubleSide}),
-	line : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 2})
+	line : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 1.5}),
+	lineHeavy : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 3})
 }
 
 NType.prototype.utils = {
@@ -273,6 +281,7 @@ NType.prototype.utils = {
 
 		extruded.joins = extrusion0.joins.concat(extrusion1.joins);
 		extruded.joins = extruded.joins.concat( this.connectCrosses( vertices.length * 2 ) );
+		extruded.originalFaceLength = vertices.length;
 
 		return extruded;
 	}
