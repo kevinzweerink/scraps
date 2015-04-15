@@ -30,8 +30,8 @@ var NType = function(el) {
 	this.rotationPlanes = [];
 	this.rotationPlanes.push('yz');
 	this.rotationPlanes.push('zw');
-	this.rotationPlanes.push('xw');
-	this.rotationPlanes.push('yw');
+	// this.rotationPlanes.push('xw');
+	// this.rotationPlanes.push('yw');
 
 	// Props
 	this.matrix = new THREE.Matrix4();
@@ -144,7 +144,7 @@ var NType = function(el) {
 		if (width > 200)
 			width = 200;
 
-		var pad = width * .7;
+		var pad = width * .75;
 
 		var total = width * this.shapes.length;
 
@@ -345,6 +345,8 @@ NType.prototype._matrices = {
 	}
 }
 
+var complex = true;
+
 function addLetter(letter) {
 	letter = NType.prototype.utils.normalizeVertices(window.TYPE[letter]);
 	ntype.addShape(letter);
@@ -380,6 +382,27 @@ window.addEventListener('keyup', function(e) {
 		e.preventDefault();
 		window.PAUSED = !window.PAUSED;
 	}
+
+	if (e.keyCode == 13) {
+		if (complex) {
+			ntype.rotationPlanes = [];
+			ntype.rotationPlanes.push('yz');
+			ntype.rotationPlanes.push('zw');
+
+			ntype.setMatrix(ntype.rotationPlanes);
+
+			complex = !complex;
+		} else {
+			ntype.rotationPlanes = [];
+			ntype.rotationPlanes.push('yz');
+			ntype.rotationPlanes.push('zw');
+			ntype.rotationPlanes.push('xw');
+			ntype.rotationPlanes.push('yw');
+
+			ntype.setMatrix(ntype.rotationPlanes);
+			complex = !complex;
+		}
+	} 
 
 	if (e.keyCode == 8) {
 		e.preventDefault();
