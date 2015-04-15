@@ -345,9 +345,22 @@ NType.prototype._matrices = {
 	}
 }
 
+function addLetter(letter) {
+	letter = NType.prototype.utils.normalizeVertices(window.TYPE[letter]);
+	ntype.addShape(letter);
+}
+
+function addString(str) {
+	var arr = str.split("");
+	arr.forEach(function(l) {
+		addLetter(l);
+	});
+}
+
 var unitH = NType.prototype.utils.normalizeVertices(window.TYPE.H);
 
 var ntype = new NType(window);
+addString('FLATLAND');
 ntype.begin();
 
 window.addEventListener('keydown', function(e) {
