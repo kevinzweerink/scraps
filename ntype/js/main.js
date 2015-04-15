@@ -38,7 +38,6 @@ var NType = function(el) {
 
 	this.setup = function() {
 		this.camera.position.z = 500;
-		this.camera.position.y = 200;
 		this.camera.lookAt(new THREE.Vector3(0,0,0));
 		this.renderer.setSize(this.w,this.h);
 		this.renderer.setClearColor(0xFFFFFF);
@@ -105,12 +104,14 @@ var NType = function(el) {
 
 		var extrusion = this.utils.extrude4(vertices);
 		var vertices = extrusion.vertices.map(function(v) {
-			return new THREE.Vector4(
-				v[0] - 0.5,
-				v[1] - 0.5,
-				v[2] - 0.5,
-				v[3] - 0.5
-			)
+			var vect = new THREE.Vector4(
+				v[0] - .5,
+				v[1] - .5,
+				v[2] - .5,
+				v[3] - .5
+			);
+
+			return vect;
 		});
 
 		var SDO = new SimpleDimensionalObject();
@@ -181,7 +182,7 @@ NType.prototype.materials = {
 
 NType.prototype.utils = {
 	projectW : function(v4) {
-		var skew = (v4.w * .9) + 1.9;
+		var skew = (v4.w * .9) + 2;
 		return new THREE.Vector3(
 			v4.x * skew,
 			v4.y * skew,
@@ -191,14 +192,16 @@ NType.prototype.utils = {
 
 	normalizeVertices : function(arr) {
 		var max = 1;
+		var min = Infinity;
 		var newArr = arr.map( function(a) {
-			max = Math.max(max, Math.max.apply(null, a))
+			max = Math.max(max, Math.max.apply(null, a));
+			min = Math.min(min, Math.min.apply(null, a));
 			return a;
 		});
 
 		newArr = newArr.map(function(a) {
 			return a.map(function(v) {
-				return v/max;
+				return (v - min) / (max - min);
 			});
 		});
 
