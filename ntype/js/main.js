@@ -301,7 +301,7 @@ NType.prototype.materials = {
 	wireframe : new THREE.MeshBasicMaterial({color: 0xFFFFFF, wireframe: true}),
 	face : new THREE.MeshBasicMaterial({color: 0xFFFFFF, opacity: .1, transparent: true, side: THREE.DoubleSide}),
 	line : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 1.5}),
-	lineLight : new THREE.LineBasicMaterial({color: 0x0000FF, lineWidth: .5, opacity: .3, transparent: true}),
+	lineLight : new THREE.LineBasicMaterial({color: 0x0000FF, lineWidth: 1, opacity: 1, transparent: true}),
 	lineHeavy : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 3})
 }
 
