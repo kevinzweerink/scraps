@@ -8,6 +8,9 @@ var speed = document.querySelector('#speed');
 var pause = document.querySelector('.button--pause');
 var play = document.querySelector('.button--play');
 var reset = document.querySelector('.button--reset');
+var forms = document.querySelector('#forms');
+var trails = document.querySelector('#trails');
+var fpr = document.querySelector('#fpr');
 
 var speedCache = 0;
 
@@ -61,3 +64,15 @@ play.addEventListener('click', function(e) {
 reset.addEventListener('click', function(e) {
 	ntype.reset();
 });
+
+forms.addEventListener('change', function(e){
+	ntype.setDrawForms(this.checked);
+});
+
+fpr.addEventListener('change', function(e) {
+	ntype.setFpr(this.value);
+})
+
+trails.addEventListener('change', function(e) {
+	ntype.setDrawTrails(this.checked);
+})

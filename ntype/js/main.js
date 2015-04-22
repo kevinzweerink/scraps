@@ -8,6 +8,7 @@ var SimpleDimensionalObject = function() {
 	this.joins = [];
 	this.lines = [];
 	this.projection = [];
+	this.trails = [];
 }
 
 var NType = function(el) {
@@ -22,9 +23,12 @@ var NType = function(el) {
 		antialias : true
 	});
 
+	this.drawTrails = false;
+	this.drawForms = true;
 	this.shapes = [];
 
 	this.speed = Math.PI/200;
+	this.fpr = 100;
 
 	this.rotationState = 0;
 	this.rotationPlanes = [];
@@ -64,6 +68,22 @@ var NType = function(el) {
 		});
 	}
 
+	this.clearTrails = function() {
+		var that = this;
+		this.shapes.forEach(function(s) {
+			s.trails.forEach(function(t) {
+				that.scene.remove(t);
+			});
+
+			s.trails = [];
+		});
+	}
+
+	this.setFpr = function(n) {
+		this.fpr = parseInt(n);
+		this.clearTrails();
+	}
+
 	this.setSpeed = function(s) {
 		this.speed = parseFloat(s);
 		this._matrices.update(this.speed);
@@ -83,6 +103,38 @@ var NType = function(el) {
 
 	this.addShape = function(vertices) {
 		this.shapes.push(this.extrude(vertices));
+		this.trailsNeedReset = true;
+	}
+
+	this.setDrawForms = function(b) {
+		var that = this;
+		if (b) {
+			this.drawForms = true;
+		} else {
+			this.drawForms = false;
+			this.shapes.forEach(function(s) {
+				s.lines.forEach(function(l) {
+					that.scene.remove(l);
+				})
+				s.lines = [];
+			});
+		}
+	}
+
+	this.setDrawTrails = function(b) {
+		var that = this;
+		if (b) {
+			this.drawTrails = true;
+		} else {
+			this.drawTrails = false;
+			this.shapes.forEach(function(s) {
+				s.trails.forEach(function(t){
+					that.scene.remove(t);
+				});
+
+				s.trails = [];
+			});
+		}
 	}
 
 	this.updateLines = function() {
@@ -90,7 +142,7 @@ var NType = function(el) {
 		var that = this;
 
 		this.shapes.forEach(function(s){
-			if (s.lines.length == 0)
+			if (s.lines.length == 0 && that.drawForms)
 				that.addLines(s);
 
 			s.lines.forEach(function(l, i) {
@@ -138,6 +190,12 @@ var NType = function(el) {
 			that.scene.remove(l);
 		})
 
+		toRemove.trails.forEach(function(t) {
+			that.scene.remove(t);
+		});
+
+		this.trailsNeedReset = true;
+
 	}
 
 	this.rotate = function() {
@@ -170,10 +228,57 @@ var NType = function(el) {
 		});
 	}
 
+	this.generateEmptyTrailsArray = function(n, v) {
+		var a = [], i = -1;
+		while (++i < n) {
+			a.push(new THREE.Vector3().copy(v));
+		}
+
+		return a;
+	}
+
+	this.updateTrails = function() {
+		if (!this.drawTrails)
+			return;
+
+		var that = this;
+
+		this.shapes.forEach(function(shape, i) {
+			shape.projection.forEach(function(vertex, j) {
+				if (!shape.trails[j]) {
+					var geo = new THREE.Geometry();
+					geo.vertices = that.generateEmptyTrailsArray(that.fpr, vertex);
+					shape.trails[j] = new THREE.Line(geo, that.materials.lineLight);
+					that.scene.add(shape.trails[j]);
+				}
+
+				if (that.trailsNeedReset) {
+					that.shapes.forEach(function(s) {
+						s.trails.forEach(function(t, i) {
+							t.geometry.vertices = that.generateEmptyTrailsArray(that.fpr, s.projection[i]);
+						})
+					});
+
+					that.trailsNeedReset = false;
+				}
+
+				shape.trails[j].geometry.vertices.forEach(function(v, i) {
+					if (i < shape.trails[j].geometry.vertices.length - 1)
+						v.copy(shape.trails[j].geometry.vertices[i+1]);
+				});
+
+				shape.trails[j].geometry.vertices[shape.trails[j].geometry.vertices.length - 1].copy(vertex);
+
+				shape.trails[j].geometry.verticesNeedUpdate = true;
+			});
+		});
+	}
+
 	this.begin = function() {
 		window.requestAnimationFrame(this.begin.bind(this));
 		this.rotate();
 		this.updateLines();
+		this.updateTrails();
 		this.renderer.render(this.scene, this.camera);
 	}
 
@@ -183,6 +288,8 @@ var NType = function(el) {
 				return new THREE.Vector4().copy(v);
 			});
 		});
+
+		this.trailsNeedReset = true;
 	}
 
 
@@ -194,6 +301,7 @@ NType.prototype.materials = {
 	wireframe : new THREE.MeshBasicMaterial({color: 0xFFFFFF, wireframe: true}),
 	face : new THREE.MeshBasicMaterial({color: 0xFFFFFF, opacity: .1, transparent: true, side: THREE.DoubleSide}),
 	line : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 1.5}),
+	lineLight : new THREE.LineBasicMaterial({color: 0x0000FF, lineWidth: .5, opacity: .3, transparent: true}),
 	lineHeavy : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 3})
 }
 
