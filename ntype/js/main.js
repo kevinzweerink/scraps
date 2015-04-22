@@ -142,8 +142,6 @@ var NType = function(el) {
 
 	this.rotate = function() {
 		var that = this;
-		if (this.speed <= 0)
-			return
 
 		this.rotationState += this.speed;
 		this.shapes.forEach(function(s) {
