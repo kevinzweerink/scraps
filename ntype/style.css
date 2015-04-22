@@ -155,8 +155,8 @@ a {
 	float: left;
 }
 
-.list-col li {
-	margin-bottom: .5rem;
+.list-col li:not(:last-of-type) {
+	margin-bottom: 1rem;
 }
 
 input[type=checkbox] {
@@ -223,7 +223,7 @@ input[type=range]::-webkit-slider-thumb {
 	float: right;
 }
 
-.form-field {
+.form-field:not(:last-of-type) {
 	margin-bottom: 1rem;
 }
 
