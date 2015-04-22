@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'Office Code Pro';
-  src:  url('/fonts/WOFF2/OfficeCodePro-Medium.woff2') format('woff2'),
-  			url('/fonts/WOFF/OfficeCodePro-Medium.woff') format('woff');       
+  src:  url('/fonts/WOFF2/OfficeCodePro-Bold.woff2') format('woff2'),
+  			url('/fonts/WOFF/OfficeCodePro-Bold.woff') format('woff');       
 }
 
 #controls, #controls-toggle {
