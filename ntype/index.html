@@ -2,13 +2,66 @@
 <html>
 <head>
 	<title>NType</title>
+	<link rel="stylesheet" href="reset.css">
 	<link href='style.css' rel='stylesheet'>
 </head>
 <body>
 
+<div id='controls'>
+	<div class="block block--title">
+		<h1>NTYPE &mdash; 4D Type Extruder</h1>
+	</div>
+
+	<div class="block block--nopad">
+		<div class="button button--play pressed"></div>
+		<div class="button button--pause"></div>
+		<div class="button button--reset"></div>
+	</div>
+
+	<div class="block">
+		<h2>Rotation Planes</h2>
+
+		<ul class='list-col'>
+			<li><input type='checkbox' class='plane-selector' id='xw'><label for='xw'>XW</label></li>
+			<li><input type='checkbox' class='plane-selector' id='yw'><label for='yw'>YW</label></li>
+			<li><input type='checkbox' class='plane-selector' id='zw' checked><label for='zw'>ZW</label></li>
+		</ul>
+
+		<ul class='list-col'>
+			<li><input type='checkbox' class='plane-selector' id='xy'><label for='xy'>XY</label></li>
+			<li><input type='checkbox' class='plane-selector' id='xz'><label for='xz'>XZ</label></li>
+			<li><input type='checkbox' class='plane-selector' id='yz' checked><label for='yz'>YZ</label></li>
+		</ul>
+	</div>
+
+	<div class="block">
+		<h2>Rotation Speed</h2>
+
+		<input type='range' min='0' max='0.1' step='0.001' value='0.0157' id='speed'>
+		<span class='min-label'>Slow</span>
+		<span class='max-label'>Fast</span>
+	</div>
+
+	<div class="block">
+		<h2>Original Face Contrast</h2>
+
+		<input type='range' min='1' max='5' step='1' value='2' id='speed'>
+		<span class='min-label'>Low</span>
+		<span class='max-label'>High</span>
+	</div>
+
+	<a class='block block--bottom' href='http://kevinzweerink.com'>
+		Kevin Zweerink
+	</a>
+</div>
+
+<div id='controls-toggle'>
+	<img src='assets/controls-icon.svg'>
+</div>
 <script type='text/javascript' src='js/three.min.js'></script>
 <script type='text/javascript' src='js/three.trackball.js'></script>
 <script type='text/javascript' src='js/type.js'></script>
 <script type='text/javascript' src='js/main.js'></script>
+<script type="text/javascript" src='js/controls.js'></script>
 </body>
 </html>

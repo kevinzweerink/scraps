@@ -1,9 +1,9 @@
 window.cos = Math.cos;
 window.sin = Math.sin;
-window.PAUSED = false;
 
 var SimpleDimensionalObject = function() {
 	this.originalFaceLength = 0;
+	this.originalVertices = [];
 	this.vertices = [];
 	this.joins = [];
 	this.lines = [];
@@ -64,8 +64,15 @@ var NType = function(el) {
 		});
 	}
 
+	this.setSpeed = function(s) {
+		this.speed = parseFloat(s);
+		this._matrices.update(this.speed);
+		this.setMatrix(this.rotationPlanes);
+	}
+
 	this.setMatrix = function(planes) {
 		var that = this;
+		this.rotationPlanes = planes;
 		this.matrix = planes.reduce(function(m, p) {
 			if ( that._matrices[p] )
 				m.multiply( that._matrices[p] );
@@ -76,7 +83,6 @@ var NType = function(el) {
 
 	this.addShape = function(vertices) {
 		this.shapes.push(this.extrude(vertices));
-
 	}
 
 	this.updateLines = function() {
@@ -117,6 +123,9 @@ var NType = function(el) {
 		var SDO = new SimpleDimensionalObject();
 		SDO.vertices = vertices;
 		SDO.joins = extrusion.joins;
+		SDO.originalVertices = vertices.map(function(v) {
+			return new THREE.Vector4().copy(v);
+		});
 		SDO.originalFaceLength = extrusion.originalFaceLength;
 
 		return SDO;
@@ -133,6 +142,9 @@ var NType = function(el) {
 
 	this.rotate = function() {
 		var that = this;
+		if (this.speed <= 0)
+			return
+
 		this.rotationState += this.speed;
 		this.shapes.forEach(function(s) {
 			s.vertices.forEach(function(v) {
@@ -162,12 +174,19 @@ var NType = function(el) {
 
 	this.begin = function() {
 		window.requestAnimationFrame(this.begin.bind(this));
-		if (!window.PAUSED) {
-			this.rotate();
-			this.updateLines();
-		}
+		this.rotate();
+		this.updateLines();
 		this.renderer.render(this.scene, this.camera);
 	}
+
+	this.reset = function() {
+		this.shapes.forEach(function(s) {
+			s.vertices = s.originalVertices.map(function(v) {
+				return new THREE.Vector4().copy(v);
+			});
+		});
+	}
+
 
 	this.setup();
 }
@@ -296,7 +315,7 @@ NType.prototype._matrices = {
 	xw : new THREE.Matrix4(),
 	xy : new THREE.Matrix4(),
 	yz : new THREE.Matrix4(),
-	zx : new THREE.Matrix4(),
+	xz : new THREE.Matrix4(),
 	update : function(t) {
 
 		this.xy.set(
@@ -313,7 +332,7 @@ NType.prototype._matrices = {
 			0,      0,  		0,  		1
 		);
 
-		this.zx.set(
+		this.xz.set(
  cos(t), 			0,-sin(t),      0,
 			0, 			1,      0,      0,
  sin(t),      0, cos(t),			0,
@@ -340,8 +359,6 @@ NType.prototype._matrices = {
 				0,      0,      1,      0,
 				0, sin(t),      0,  cos(t)
 		)
-
-
 	}
 }
 
@@ -377,32 +394,6 @@ window.addEventListener('keyup', function(e) {
 		var letter = NType.prototype.utils.normalizeVertices(window.TYPE[key]);
 		ntype.addShape(letter);
 	}
-
-	if (e.keyCode == 32) {
-		e.preventDefault();
-		window.PAUSED = !window.PAUSED;
-	}
-
-	if (e.keyCode == 13) {
-		if (complex) {
-			ntype.rotationPlanes = [];
-			ntype.rotationPlanes.push('yz');
-			ntype.rotationPlanes.push('zw');
-
-			ntype.setMatrix(ntype.rotationPlanes);
-
-			complex = !complex;
-		} else {
-			ntype.rotationPlanes = [];
-			ntype.rotationPlanes.push('yz');
-			ntype.rotationPlanes.push('zw');
-			ntype.rotationPlanes.push('xw');
-			ntype.rotationPlanes.push('yw');
-
-			ntype.setMatrix(ntype.rotationPlanes);
-			complex = !complex;
-		}
-	} 
 
 	if (e.keyCode == 8) {
 		e.preventDefault();
