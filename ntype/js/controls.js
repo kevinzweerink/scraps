@@ -11,6 +11,7 @@ var reset = document.querySelector('.button--reset');
 var forms = document.querySelector('#forms');
 var trails = document.querySelector('#trails');
 var fpr = document.querySelector('#fpr');
+var share = document.querySelector('#share');
 
 var speedCache = 0;
 
@@ -91,6 +92,11 @@ fpr.addEventListener('change', function(e) {
 
 trails.addEventListener('change', function(e) {
 	ntype.setDrawTrails(this.checked);
+});
+
+share.addEventListener('click', function(e) {
+	e.preventDefault();
+	generateShortUrl();
 });
 
 window.addEventListener('mousewheel', function(e) {

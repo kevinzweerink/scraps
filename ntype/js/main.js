@@ -30,6 +30,8 @@ var NType = function(el) {
 	this.speed = Math.PI/200;
 	this.fpr = 100;
 
+	this.string = "";
+
 	this.rotationState = 0;
 	this.rotationPlanes = [];
 	this.rotationPlanes.push('yz');
@@ -121,6 +123,9 @@ var NType = function(el) {
 		var that = this;
 		if (b) {
 			this.drawForms = true;
+			this.project();
+			this.updateLines();
+			this.updateTrails();
 		} else {
 			this.drawForms = false;
 			this.shapes.forEach(function(s) {
@@ -194,6 +199,19 @@ var NType = function(el) {
 		return SDO;
 	}
 
+	this.addString = function(str) {
+		var that = this;
+		var arr = str.split("");
+		arr.forEach(function(l) {
+			that.addLetter(l);
+		});
+	}
+
+	this.addLetter = function(letter) {
+		this.addShape(window.TYPE[letter]);
+		this.string += letter;
+	}
+
 	this.backspace = function() {
 		var toRemove = this.shapes.pop();
 		var that = this;
@@ -211,6 +229,8 @@ var NType = function(el) {
 			this.updateLines();
 			this.updateTrails();
 		}
+
+		this.string = this.string.substr(0, this.string.length - 1);
 
 	}
 
@@ -545,6 +565,20 @@ NType.prototype._matrices = {
 	}
 }
 
+NType.prototype.bundleSettings = function() {
+	var settings = {};
+	settings.speed = this.speed;
+	settings.rotationPlanes = this.rotationPlanes;
+
+}
+
+NType.prototype.importSettings = function(settings) {
+	this.setSpeed(settings.speed);
+	this.rotationPlanes = settings.rotationPlanes;
+	this.setMatrix(this.rotationPlanes);
+	this.addString(settings.string);
+}
+
 NType.prototype.utils.normalizeLetterSet = function(set) {
 	for (var letterKey in set) {
 		var letter = set[letterKey];
@@ -582,24 +616,12 @@ NType.prototype.utils.normalizeLetterSet = function(set) {
 	}
 }
 
-var complex = true;
+	NType.prototype.utils.normalizeLetterSet(window.TYPE);
 
-function addLetter(letter) {
-	ntype.addShape(window.TYPE[letter]);
-}
-
-function addString(str) {
-	var arr = str.split("");
-	arr.forEach(function(l) {
-		addLetter(l);
-	});
-}
-
-NType.prototype.utils.normalizeLetterSet(window.TYPE);
-
-var ntype = new NType(window);
-addString('FLATLAND');
-ntype.begin();
+	var ntype = new NType(window);
+	ntype.addString('FLATLAND');
+	// ntype.importSettings(parseJSON(window.location.hash));
+	ntype.begin();
 
 window.addEventListener('keydown', function(e) {
 	if (e.keyCode == 8) {
