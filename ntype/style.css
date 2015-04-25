@@ -4,6 +4,10 @@
   			url('fonts/WOFF/OfficeCodePro-Bold.woff') format('woff');       
 }
 
+body {
+	overflow: hidden;
+}
+
 #controls, #controls-toggle {
 	z-index: 10000;
 }
@@ -12,7 +16,7 @@
 	-webkit-transform: translate(0, 0);
 	transform: translate(0,0);
 
-	-webkit-transition: transform .15s ease;
+	-webkit-transition: -webkit-transform .15s ease;
 	transition: transform .15s ease;
 }
 
@@ -26,7 +30,7 @@
 	-webkit-transform: translate(100%, 0);
 	transform: translate(100%,0);
 
-	-webkit-transition: transform .15s ease;
+	-webkit-transition: -webkit-transform .15s ease;
 	transition: transform .15s ease;
 
 	position: fixed;
@@ -37,6 +41,8 @@
 	border-left: 2px solid;
 	background: #FFF;
 	font-size: .75rem;
+	height: 100vh;
+	overflow-y: scroll;
 
 	color: #0000FF;
 	font-family: 'Office Code Pro', monospace;
@@ -155,6 +161,10 @@ a {
 	float: left;
 }
 
+.list-col li {
+	overflow: hidden;
+}
+
 .list-col li:not(:last-of-type) {
 	margin-bottom: 1rem;
 }
@@ -162,6 +172,7 @@ a {
 input[type=checkbox] {
 	position: absolute;
 	left: 100%;
+	display: none;
 }
 
 input[type=checkbox] ~ label {
@@ -186,6 +197,8 @@ input[type=checkbox]:checked ~ label::before {
 
 input[type=range] {
 	width: 100%;
+	margin: 0;
+	padding: 0;
 	-webkit-appearance: none;
 	margin-bottom: 1rem;
 	cursor: ew-resize;
@@ -205,8 +218,23 @@ input[type=range]::-webkit-slider-runnable-track {
 	border-radius: 2px;
 }
 
+input[type=range]::-moz-range-track {
+	height: 2px;
+	background: #0000FF;
+	border-radius: 2px;
+}
+
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
+	border: none;
+	width: 12px;
+	height: 12px;
+	background: #0000FF;
+	border-radius: 6px;
+	margin-top: -5px;
+}
+
+input[type=range]::-moz-range-thumb {
 	border: none;
 	width: 12px;
 	height: 12px;

@@ -25,6 +25,23 @@ function gatherPlanes() {
 	)
 }
 
+function setPaused(paused) {
+	if (paused) {
+		if ( pause.classList.contains('pressed') ) {
+			return;
+		}
+		play.classList.remove('pressed');
+		pause.classList.add('pressed');
+	} else {
+		if ( play.classList.contains('pressed') ){
+			return;
+		}
+
+		play.classList.add('pressed');
+		pause.classList.remove('pressed');
+	}
+}
+
 controlsToggle.addEventListener('click', function(e) {
 	e.preventDefault();
 	controlPanel.classList.toggle('open');
@@ -48,8 +65,7 @@ pause.addEventListener('click', function(e) {
 
 	this.classList.add('pressed');
 	play.classList.remove('pressed');
-	speedCache = ntype.speed;
-	ntype.setSpeed(0);
+	window.PAUSED = true;
 });
 
 play.addEventListener('click', function(e) {
@@ -58,7 +74,7 @@ play.addEventListener('click', function(e) {
 
 	this.classList.add('pressed');
 	pause.classList.remove('pressed');
-	ntype.setSpeed(speedCache);
+	window.PAUSED = false;
 });
 
 reset.addEventListener('click', function(e) {
@@ -75,4 +91,24 @@ fpr.addEventListener('change', function(e) {
 
 trails.addEventListener('change', function(e) {
 	ntype.setDrawTrails(this.checked);
+});
+
+window.addEventListener('mousewheel', function(e) {
+	if (window.PAUSED) {
+		ntype._scrollMatrices.update(e.wheelDeltaY/5000);
+		gatherPlanes();
+
+		ntype.rotate(ntype.scrollMatrix);
+		ntype.updateLines();
+		ntype.updateTrails();
+	}
+});
+
+window.addEventListener('MozMousePixelScroll', function(e) {
+	if (window.PAUSED) {
+
+		ntype.rotate();
+		ntype.updateLines();
+		ntype.updateTrails();
+	}
 })

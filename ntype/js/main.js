@@ -34,11 +34,10 @@ var NType = function(el) {
 	this.rotationPlanes = [];
 	this.rotationPlanes.push('yz');
 	this.rotationPlanes.push('zw');
-	// this.rotationPlanes.push('xw');
-	// this.rotationPlanes.push('yw');
 
-	// Props
 	this.matrix = new THREE.Matrix4();
+
+	this.scrollMatrix = new THREE.Matrix4();
 
 	this.setup = function() {
 		this.camera.position.z = 500;
@@ -99,11 +98,23 @@ var NType = function(el) {
 
 			return m;
 		}, new THREE.Matrix4());
+
+		this.scrollMatrix = planes.reduce(function(m,p) {
+			if (that._scrollMatrices[p]) {
+				m.multiply(that._scrollMatrices[p]);
+			}
+			return m;
+		}, new THREE.Matrix4());
 	}
 
 	this.addShape = function(vertices) {
 		this.shapes.push(this.extrude(vertices));
 		this.trailsNeedReset = true;
+		if (window.PAUSED) {
+			this.project();
+			this.updateLines();
+			this.updateTrails();
+		}
 	}
 
 	this.setDrawForms = function(b) {
@@ -195,19 +206,16 @@ var NType = function(el) {
 		});
 
 		this.trailsNeedReset = true;
+		if (window.PAUSED) {
+			this.project();
+			this.updateLines();
+			this.updateTrails();
+		}
 
 	}
 
-	this.rotate = function() {
+	this.project = function() {
 		var that = this;
-
-		this.rotationState += this.speed;
-		this.shapes.forEach(function(s) {
-			s.vertices.forEach(function(v) {
-				v.applyMatrix4(that.matrix)
-			});
-		});
-
 		var width = this.w / this.shapes.length;
 		if (width > 200)
 			width = 200;
@@ -226,6 +234,19 @@ var NType = function(el) {
 				return that.utils.projectW(v).multiplyScalar(width - pad).sub(subVector);
 			});
 		});
+	}
+
+	this.rotate = function(matrix) {
+		var that = this;
+
+		this.rotationState += this.speed;
+		this.shapes.forEach(function(s) {
+			s.vertices.forEach(function(v) {
+				v.applyMatrix4(matrix || that.matrix)
+			});
+		});
+
+		this.project();
 	}
 
 	this.generateEmptyTrailsArray = function(n, v) {
@@ -276,9 +297,11 @@ var NType = function(el) {
 
 	this.begin = function() {
 		window.requestAnimationFrame(this.begin.bind(this));
-		this.rotate();
-		this.updateLines();
-		this.updateTrails();
+		if (!window.PAUSED) {
+			this.rotate();
+			this.updateLines();
+			this.updateTrails();
+		}
 		this.renderer.render(this.scene, this.camera);
 	}
 
@@ -290,6 +313,9 @@ var NType = function(el) {
 		});
 
 		this.trailsNeedReset = true;
+		this.project();
+		this.updateLines();
+		this.updateTrails();
 	}
 
 
@@ -298,8 +324,6 @@ var NType = function(el) {
 
 // Libs
 NType.prototype.materials = {
-	wireframe : new THREE.MeshBasicMaterial({color: 0xFFFFFF, wireframe: true}),
-	face : new THREE.MeshBasicMaterial({color: 0xFFFFFF, opacity: .1, transparent: true, side: THREE.DoubleSide}),
 	line : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 1.5}),
 	lineLight : new THREE.LineBasicMaterial({color: 0x0000FF, lineWidth: 1, opacity: 1, transparent: true}),
 	lineHeavy : new THREE.LineBasicMaterial({color: 0x0000FF, linewidth : 3})
@@ -412,6 +436,59 @@ NType.prototype.utils = {
 		extruded.originalFaceLength = vertices.length;
 
 		return extruded;
+	}
+}
+
+NType.prototype._scrollMatrices = {
+	zw : new THREE.Matrix4(),
+	yw : new THREE.Matrix4(),
+	xw : new THREE.Matrix4(),
+	xy : new THREE.Matrix4(),
+	yz : new THREE.Matrix4(),
+	xz : new THREE.Matrix4(),
+	update : function(t) {
+
+		this.xy.set(
+ cos(t), sin(t),      0,      0,
+-sin(t), cos(t),      0,      0,
+			0,      0,      1,			0,
+			0,      0,  		0,			1
+		);
+
+		this.yz.set(
+			1,      0,      0,      0,
+			0, cos(t), sin(t),      0,
+			0,-sin(t), cos(t),			0,
+			0,      0,  		0,  		1
+		);
+
+		this.xz.set(
+ cos(t), 			0,-sin(t),      0,
+			0, 			1,      0,      0,
+ sin(t),      0, cos(t),			0,
+			0,      0,  		0,			1	
+		)
+
+		this.zw.set(
+			1,      0,      0,      0,
+			0,      1,      0,      0,
+			0,      0,  cos(t),-sin(t),
+			0,      0,  sin(t),  cos(t)
+		);
+
+		this.xw.set(
+		 cos(t),      0,      0, sin(t),
+					0,      1,      0,      0,
+					0,      0,      1,      0,
+		-sin(t),      0,      0,  cos(t)
+		);
+
+		this.yw.set(
+	      1,      0,      0,      0,
+				0, cos(t),      0,-sin(t),
+				0,      0,      1,      0,
+				0, sin(t),      0,  cos(t)
+		)
 	}
 }
 
@@ -535,6 +612,11 @@ window.addEventListener('keyup', function(e) {
 	if (window.TYPE[key] && window.TYPE[key].length > 0) {
 		var letter = window.TYPE[key];
 		ntype.addShape(letter);
+	}
+
+	if (e.keyCode == 32) {
+		window.PAUSED = !window.PAUSED;
+		setPaused(window.PAUSED);
 	}
 
 	if (e.keyCode == 8) {
