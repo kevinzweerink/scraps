@@ -468,11 +468,47 @@ NType.prototype._matrices = {
 	}
 }
 
+NType.prototype.utils.normalizeLetterSet = function(set) {
+	for (var letterKey in set) {
+		var letter = set[letterKey];
+		var offset = letter.reduce(function(min, vertex) {
+			if (vertex[0] < min)
+				min = vertex[0];
+
+			return min;
+		}, Infinity);
+
+		letter = letter.map(function(vertex) {
+			return [vertex[0] - offset, vertex[1]];
+		});
+	};
+
+	var max = 0;
+
+	for (var letterKey in set) {
+		var letter = set[letterKey];
+		letter.forEach(function(vertex) {
+			if (vertex[0] > max)
+				max = vertex[0];
+
+			if (vertex[1] > max)
+				max = vertex[1];
+		});
+	}
+
+	for (var letterKey in set) {
+		var letter = set[letterKey];
+		letter.forEach(function(vertex) {
+			vertex[0] /= max;
+			vertex[1] /= max;
+		});
+	}
+}
+
 var complex = true;
 
 function addLetter(letter) {
-	letter = NType.prototype.utils.normalizeVertices(window.TYPE[letter]);
-	ntype.addShape(letter);
+	ntype.addShape(window.TYPE[letter]);
 }
 
 function addString(str) {
@@ -482,7 +518,7 @@ function addString(str) {
 	});
 }
 
-var unitH = NType.prototype.utils.normalizeVertices(window.TYPE.H);
+NType.prototype.utils.normalizeLetterSet(window.TYPE);
 
 var ntype = new NType(window);
 addString('FLATLAND');
@@ -497,7 +533,7 @@ window.addEventListener('keydown', function(e) {
 window.addEventListener('keyup', function(e) {
 	var key = String.fromCharCode(e.keyCode);
 	if (window.TYPE[key] && window.TYPE[key].length > 0) {
-		var letter = NType.prototype.utils.normalizeVertices(window.TYPE[key]);
+		var letter = window.TYPE[key];
 		ntype.addShape(letter);
 	}
 
