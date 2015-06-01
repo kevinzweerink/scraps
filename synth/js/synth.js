@@ -20,7 +20,7 @@ if (typeof AudioContext !== "undefined") {
 }
 
 var oscillator = ctx.createOscillator();
-oscillator.type = 'sine';
+oscillator.type = 'sawtooth';
 oscillator.frequency.value = 300;
 oscillator.start();
 
@@ -50,11 +50,14 @@ gate.gain.value = 0;
 var masterVolume = ctx.createGain();
 masterVolume.gain.value = 1;
 
+var analyser = ctx.createAnalyser();
+
 oscillator.connect(modulator);
 modulator.connect(filter);
 filter.connect(gate);
 gate.connect(masterVolume);
-masterVolume.connect(ctx.destination);
+masterVolume.connect(analyser);
+analyser.connect(ctx.destination);
 
 lfo2.connect(lfoGain);
 lfoGain.connect(filter.frequency);
@@ -106,4 +109,38 @@ window.addEventListener('mousemove', function(e) {
 		document.querySelector('#target').style.top = e.clientY + 'px';
 		document.querySelector('#target').style.left = e.clientX + 'px';
 	}
-})
+});
+
+var vis = document.querySelector('#vis');
+vis.style.width = '100%';
+vis.style.height = '100vh';
+vis.style.position = 'absolute';
+vis.width = window.innerWidth;
+vis.height = window.innerHeight;
+vis.style.zIndex = -5;
+
+visCtx = vis.getContext('2d');
+
+function draw() {
+	window.requestAnimationFrame(draw);
+	var bufferLength = analyser.frequencyBinCount;
+	var dataArray = new Float32Array(bufferLength);
+	analyser.getFloatFrequencyData(dataArray);
+
+	visCtx.fillStyle = 'rgb(255, 255, 255)';
+  visCtx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+	visCtx.strokeStyle = '#000';
+	visCtx.lineWidth = 2;
+
+	visCtx.beginPath();
+
+	slice = window.innerWidth / bufferLength;
+	for (var i = 0; i < bufferLength; ++i) {
+		visCtx.lineTo(i * slice, -dataArray[i] + (window.innerHeight/2));
+	}
+
+	visCtx.stroke();
+
+}
+draw();
