@@ -4,7 +4,10 @@ var noon = [109, 173, 247];
 var evening = [237, 155, 104];
 
 var noonWater = [59,128,118];
-var eveningWater = [30,66,50];
+var eveningWater = [67,55,87];
+
+var noonSun = [240,237,72];
+var eveningSun = [250,90,57];
 
 var keyMap = {
 	65 : 261.63,
@@ -20,8 +23,6 @@ var keyMap = {
 	222 : 698.46
 }
 
-var keysPressed = 0;
-
 if (typeof AudioContext !== "undefined") {
     ctx = new AudioContext();
 } else if (typeof webkitAudioContext !== "undefined") {
@@ -30,7 +31,7 @@ if (typeof AudioContext !== "undefined") {
 
 var oscillator = ctx.createOscillator();
 oscillator.type = 'sawtooth';
-oscillator.frequency.value = 300;
+oscillator.frequency.value = 261.63;
 oscillator.start();
 
 var lfo = ctx.createOscillator();
@@ -54,7 +55,7 @@ filter.type = 'lowpass';
 filter.frequency.value = 1000;
 
 var gate = ctx.createGain();
-gate.gain.value = 0;
+gate.gain.value = 0.3;
 
 var masterVolume = ctx.createGain();
 masterVolume.gain.value = 1;
@@ -75,26 +76,6 @@ lfoGain.connect(filter.frequency);
 window.addEventListener('keydown', function(e) {
 	if (keyMap[e.keyCode]) {
 		oscillator.frequency.value = keyMap[e.keyCode];
-
-		keysPressed++;
-
-		if (keysPressed > 0) {
-			gate.gain.value = 0.3;
-		}
-	}
-
-	if (e.keyCode == 32) {
-		gate.gain.value = 0;
-		keysPressed = 0;
-	}
-});
-
-window.addEventListener('keyup', function(e) {
-	if (keyMap[e.keyCode]) {
-		keysPressed--;
-		if (keysPressed == 0) {
-			gate.gain.value = 0;
-		}
 	}
 });
 
@@ -115,6 +96,8 @@ window.addEventListener('mousemove', function(e) {
 		lfo2.frequency.value = 20 * y;
 
 		window.sunPos = y;
+
+		document.querySelector('#target').style.background = rgbLerp(noonSun, eveningSun, y);
  
 		document.querySelector('#x').style.top = e.clientY + 'px';
 		document.querySelector('#y').style.left = e.clientX + 'px';

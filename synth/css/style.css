@@ -83,4 +83,5 @@ html, body {
 	border-radius: 50%;
 	position: absolute;
 	background: #F2EB22;
+	cursor: move;
 }
