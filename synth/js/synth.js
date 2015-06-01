@@ -54,8 +54,6 @@ var masterVolume = ctx.createGain();
 masterVolume.gain.value = 1;
 
 var analyser = ctx.createAnalyser();
-analyser.maxDecibels = 100;
-analyser.minDecibels = 0;
 analyser.fftSize = 256;
 
 oscillator.connect(modulator);
@@ -140,11 +138,10 @@ function draw() {
 
 	slice = window.innerWidth / bufferLength;
 	for (var i = 0; i < bufferLength; i++) {
-		// visCtx.lineTo(i * slice, -dataArray[i] + (window.innerHeight/2));
 
-		var barHeight = (window.innerHeight/2) - dataArray[i];
+		var barHeight = window.innerHeight/2 + dataArray[i];
 
-		visCtx.fillRect(i * slice, barHeight , 1, barHeight);
+		visCtx.fillRect(i * slice, window.innerHeight - barHeight , 1, barHeight);
 	}
 
 	visCtx.stroke();
