@@ -8,7 +8,10 @@ var keyMap = {
 	71 : 392,
 	72 : 440,
 	74 : 493.88,
-	75 : 523.25
+	75 : 523.25,
+	76 : 587.33,
+	186 : 659.26,
+	222 : 698.46
 }
 
 var keysPressed = 0;
@@ -26,12 +29,12 @@ oscillator.start();
 
 var lfo = ctx.createOscillator();
 lfo.type = 'sine';
-lfo.frequency.value = 100;
+lfo.frequency.value = 0.95 * 200;
 lfo.start();
 
 var lfo2 = ctx.createOscillator();
 lfo2.type = 'sine';
-lfo2.frequency.value = 1;
+lfo2.frequency.value = 0.02 * 20;
 lfo2.start();
 
 var lfoGain = ctx.createGain();
@@ -51,6 +54,9 @@ var masterVolume = ctx.createGain();
 masterVolume.gain.value = 1;
 
 var analyser = ctx.createAnalyser();
+analyser.maxDecibels = 100;
+analyser.minDecibels = 0;
+analyser.fftSize = 256;
 
 oscillator.connect(modulator);
 modulator.connect(filter);
@@ -130,14 +136,15 @@ function draw() {
 	visCtx.fillStyle = 'rgb(255, 255, 255)';
   visCtx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-	visCtx.strokeStyle = '#000';
-	visCtx.lineWidth = 2;
-
-	visCtx.beginPath();
+	visCtx.fillStyle = '#000';
 
 	slice = window.innerWidth / bufferLength;
-	for (var i = 0; i < bufferLength; ++i) {
-		visCtx.lineTo(i * slice, -dataArray[i] + (window.innerHeight/2));
+	for (var i = 0; i < bufferLength; i++) {
+		// visCtx.lineTo(i * slice, -dataArray[i] + (window.innerHeight/2));
+
+		var barHeight = (window.innerHeight/2) - dataArray[i];
+
+		visCtx.fillRect(i * slice, barHeight , 1, barHeight);
 	}
 
 	visCtx.stroke();
