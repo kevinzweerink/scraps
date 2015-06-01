@@ -1,5 +1,11 @@
 var ctx;
 
+var noon = [109, 173, 247];
+var evening = [237, 155, 104];
+
+var noonWater = [59,128,118];
+var eveningWater = [30,66,50];
+
 var keyMap = {
 	65 : 261.63,
 	83 : 293.66,
@@ -107,6 +113,8 @@ window.addEventListener('mousemove', function(e) {
 
 		lfo.frequency.value = 200 * x;
 		lfo2.frequency.value = 20 * y;
+
+		window.sunPos = y;
  
 		document.querySelector('#x').style.top = e.clientY + 'px';
 		document.querySelector('#y').style.left = e.clientX + 'px';
@@ -114,6 +122,16 @@ window.addEventListener('mousemove', function(e) {
 		document.querySelector('#target').style.left = e.clientX + 'px';
 	}
 });
+
+function rgbLerp(a,b,value) {
+	var c = [];
+
+	for (var i = 0; i < 3; ++i) {
+		c[i] = ((b[i] - a[i]) * value) + a[i];
+	}
+
+	return 'rgb(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ')';
+}
 
 var vis = document.querySelector('#vis');
 vis.style.width = '100%';
@@ -131,17 +149,17 @@ function draw() {
 	var dataArray = new Float32Array(bufferLength);
 	analyser.getFloatFrequencyData(dataArray);
 
-	visCtx.fillStyle = 'rgb(255, 255, 255)';
+	visCtx.fillStyle = rgbLerp(noon,evening,window.sunPos || 0);
   visCtx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
-	visCtx.fillStyle = '#000';
+	visCtx.fillStyle = rgbLerp(noonWater, eveningWater, window.sunPos || 0);
 
 	slice = window.innerWidth / bufferLength;
 	for (var i = 0; i < bufferLength; i++) {
 
 		var barHeight = window.innerHeight/2 + dataArray[i];
 
-		visCtx.fillRect(i * slice, window.innerHeight - barHeight , 1, barHeight);
+		visCtx.fillRect(i * slice, window.innerHeight - barHeight , slice, barHeight);
 	}
 
 	visCtx.stroke();

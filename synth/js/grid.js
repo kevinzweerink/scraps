@@ -19,7 +19,7 @@ for (var i = 0; i < h; ++i) {
 		context.moveTo(j,i);
 		context.beginPath();
 		context.arc(j, i, 2, 0, Math.PI * 2, false);
-		context.fillStyle = '#000';
+		context.fillStyle = '#FFF';
 		context.fill();
 
 		j+=unit
